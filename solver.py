@@ -8,15 +8,25 @@ import PIL.ImageGrab
 
 
 def back_to_game():
-    '''Command tabs back into game - MAC SPECIFIC CURRENTLY'''
+    '''Command tabs back into game'''
+
+    #* MAC *#
     pyag.hotkey('command', 'tab')
     pyag.press('space')
     time.sleep(1)
     pyag.press('c')
 
+    #* WINDOWS *#
+    # pyag.hotkey('ctrl', 'tab') #? Check that this works
+    # pyag.press('space')
+    # time.sleep(1)
+    # pyag.press('c')
+
 
 def copy_screen():
     '''Copies screenshot to clipboard, then command tabs back to vscode - MAC SPECIFIC CURRENTLY'''
+    
+    #* MAC *#
     pyag.hotkey('command', 'ctrl', 'shift', '4')
     pyag.press('space')
     pyag.keyDown('option')
@@ -25,13 +35,15 @@ def copy_screen():
     pyag.press('space')
     pyag.hotkey('command', 'tab')
 
+    #* WINDOWS *#
+    # pyag.hotkey('printscreen', 'alt') #? Check that this works
 
 def process_image():
     '''Grabs image and calculates score from pixels'''
     # im = Image.open('./example_scrnsht.png')
-    img_ = PIL.ImageGrab.grabclipboard()
+    img_ = PIL.ImageGrab.grabclipboard() # Windows and Mac friendly
 
-    np_im = np.array(img_) # Shape: (1772, 2304, 3)
+    np_im = np.array(img_) # Shape: (1772, 2304, 3) #! Not windows friendly
     _, max_score, _ = np_im.shape
     target_slice = np_im[-5, :, 0]
 
