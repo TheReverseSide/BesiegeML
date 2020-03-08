@@ -78,8 +78,8 @@ def process_image():
     # print(target_slice[result-3:result+3])
 
 
-def retard_click(x, y):
-    print(f"A very retarded click: retard_click({x}, {y})")
+def deliberate_click(x, y):
+    print(f"A very deliberate click: deliberate_click({x}, {y})")
     pyag.moveTo(x, y)
     pyag.mouseDown()
     time.sleep(0.1)
@@ -89,13 +89,13 @@ def retard_click(x, y):
 def load_save(filename):
     print(f"load_save({filename})")
 
-    retard_click(432, 60)
+    deliberate_click(432, 60)
 
     for _ in range(20):
         pyag.press('backspace')
 
     pyag.typewrite(filename)
-    retard_click(x=1226, y=194)
+    deliberate_click(x=1226, y=194)
 
 
 def reset_game():
