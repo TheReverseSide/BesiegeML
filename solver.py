@@ -8,6 +8,8 @@ import numpy as np
 import pyautogui as pyag
 import PIL.ImageGrab
 
+import xml_manipulator
+
 
 def initialize_game_mac():
     '''Command tabs back into game'''
@@ -102,11 +104,12 @@ def reset_game():
     load_save("scorpion_mess")
 
 
-def get_score():
+def get_score(exec_time):
     print("score_function()")
-    time.sleep(5) # Should be killing people
+    time.sleep(exec_time) # Should be killing people
     copy_screen_win()
-    process_image()
+    score = process_image()
+    return score
 
 
 def sandbox():
@@ -119,18 +122,19 @@ def print_mouse_pos():
         time.sleep(2)
 
 
-def score_function(filename):
-    print(f"score_function({filename})")
+def score_function(filename, exec_time):
+    print(f"score_function({filename}, {exec_time})")
     np.set_printoptions(threshold=sys.maxsize)
     initialize_game_win(filename)
-    get_score()
-    reset_game()
+    return get_score(exec_time)
+    # reset_game()
 
 
 def parse_args():
     try:
         time_limit = float(sys.argv[1])
-        return time_limit
+        exec_time = float(sys.argv[2])
+        return time_limit, exec_time
     except:
         print('Execute in following format:')
         print('python solver.py [time limit in seconds]')
@@ -138,30 +142,30 @@ def parse_args():
 
 
 def generate_candidate():
-    pass
+    xml_manipulator.generate_candidate()
 
 
-def save_candidate():
+def save_candidate(candidate_name, best_name):
     directory = r"D:\Games\steamapps\common\Besiege\Besiege_Data\SavedMachines"
-    candidate = os.path.join(directory, "candidate.bsg")
-    best = os.path.join(directory, "best.bsg")
+    candidate = os.path.join(directory, f"{candidate_name}.bsg")
+    best = os.path.join(directory, f"{best_name}.bsg")
     shutil.copyfile(candidate, best)
 
 
 def main():
     '''Your most beloved random search <3'''
-    time_limit = parse_args()
+    time_limit, exec_time = parse_args()
     execution_start = time.time()
     cand_score = 0
+    best_score = 0
     while time.time() - execution_start < time_limit:
         generate_candidate()
-        cand_score = score_function('candidate')
+        cand_score = score_function('xml_generated', exec_time)
         if cand_score > best_score:
             best_score = cand_score
-            save_candidate()
-        break
+            save_candidate('xml_generated', 'best')
 
 
 if __name__ == '__main__':
-    # main()
-    sandbox()
+    main()
+    # sandbox()

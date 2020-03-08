@@ -33,7 +33,7 @@ def manipulate_save_object(save_obj):
     for block in root.iter('Block'):
         if block.attrib['id'] == '31':
             pos = next(block.iter('Position'))
-            print(pos.tag, pos.attrib)
+            # print(pos.tag, pos.attrib)
             pos.attrib['x'] = f'{random.uniform(-8.0, 8.0):.2}'
             pos.attrib['z'] = f'{random.uniform(-8.0, 8.0):.2}'
 
@@ -44,11 +44,12 @@ def get_save_object(save_name):
     return tree
 
 
-def main():
+def generate_candidate():
+    print("generate_candidate()")
     save_obj = get_save_object('xml_original')
     manipulate_save_object(save_obj)
     save_as_xml(save_obj)
 
 
 if __name__ == "__main__":
-    main()
+    generate_candidate()
