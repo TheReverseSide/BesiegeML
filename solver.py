@@ -7,6 +7,7 @@ import time
 import numpy as np
 import pyautogui as pyag
 import PIL.ImageGrab
+from scipy.optimize import basinhopping
 
 import xml_manipulator
 
@@ -73,6 +74,7 @@ def process_image():
 
     result = np.where(target_slice < 100)[0][0]
     score = 100*result/max_score
+    score = max(score, 0.001)
     print(f"\nScore: {score:.1f}")
     return score
     # print(target_slice[result-3:result+3])
@@ -141,8 +143,8 @@ def parse_args():
         sys.exit()
 
 
-def generate_candidate():
-    xml_manipulator.generate_candidate()
+def generate_candidate(x=None, z=None):
+    xml_manipulator.generate_candidate(x,z)
 
 
 def save_candidate(candidate_name, best_name):
@@ -166,6 +168,37 @@ def main():
             save_candidate('xml_generated', 'best')
 
 
+def black_box(config, coords):
+    exec_time = config['exec_time']
+    cand_filename = config['cand_filename']
+    best_filename = config['best_filename']    
+    x,z = coords
+    generate_candidate(x,z)
+    cand_score = score_function('xml_generated', exec_time)
+    if cand_score > config['best_score']:
+        config['best_score'] = cand_score
+        save_candidate(cand_filename, best_filename)
+
+
+def solve_basin_hop():
+    config = {
+        'exec_time': 10,
+        'cand_filename': 'xml_generated',
+        'best_filename': 'best',
+        'best_score': 0
+    }
+    minimizer_kwargs = {"method":"L-BFGS-B"}
+    x0 = [0,0]
+    func = lambda x: black_box(config, x)
+    ret = basinhopping(
+        func, x0, minimizer_kwargs=minimizer_kwargs, niter=5
+    )
+    print("global minimum: x = [%.4f, %.4f], f(x0) = %.4f" % (
+        ret.x[0], ret.x[1], ret.fun
+    ))
+
+
 if __name__ == '__main__':
-    main()
+    # main()
+    solve_basin_hop()
     # sandbox()

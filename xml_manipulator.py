@@ -1,6 +1,5 @@
 import random
-import xml.etree.ElementTree as ET\
-
+import xml.etree.ElementTree as ET
 
 PATH = "d:\\Games\\steamapps\\common\\Besiege\\Besiege_Data\\SavedMachines\\"
 
@@ -21,6 +20,21 @@ def save_as_xml(save_obj):
         content = stream.read()
         stream.seek(0, 0)
         stream.write('<?xml version="1.0" encoding="utf-8"?>' + '\n\n' + content)
+
+
+def set_pos(save_obj, x , z):
+    print(f"manipulate_save_object({save_obj})")
+    # print(save_obj.getroot().attrib['name'])
+    root = save_obj.getroot()
+    root.attrib['name'] = "xml_generated"
+
+    # Change position of block with ID 15
+    for block in root.iter('Block'):
+        if block.attrib['id'] == '31':
+            pos = next(block.iter('Position'))
+            # print(pos.tag, pos.attrib)
+            pos.attrib['x'] = f'{random.uniform(-8.0, 8.0):.2}'
+            pos.attrib['z'] = f'{random.uniform(-8.0, 8.0):.2}'
 
 
 def manipulate_save_object(save_obj):
@@ -44,10 +58,15 @@ def get_save_object(save_name):
     return tree
 
 
-def generate_candidate():
+def generate_candidate(x=None, z=None):
     print("generate_candidate()")
     save_obj = get_save_object('xml_original')
-    manipulate_save_object(save_obj)
+    
+    if x == None and z == None:
+        manipulate_save_object(save_obj)
+    else:
+        set_pos(save_obj, x, z)
+
     save_as_xml(save_obj)
 
 
