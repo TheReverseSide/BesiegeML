@@ -19,7 +19,7 @@ with open('/Users/startz/Library/Application Support/Steam/steamapps/common/Besi
     f.write('<?xml version="1.0" encoding="utf-8"?>' + '\n' + content)
 
 # Global rotation
-# print('\n Global rotation:')
+# print('\n Global rotation:')j
 # print(root[0][1].attrib)
 
 # #* all item attributes
